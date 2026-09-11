@@ -4,6 +4,12 @@
 
 Projeto visual de qualidade de dados desenvolvido por **Morgana Petterle da Cunha** com Python, pandas e Streamlit. A aplicação não é apenas um conversor de arquivos: ela mede a confiabilidade da base, explica os problemas, aplica regras controladas e documenta o resultado.
 
+## Aplicação online
+
+### [Abrir o Data Quality Studio](https://data-cleaning-python.streamlit.app/)
+
+Teste diretamente pelo navegador usando a base demonstrativa ou envie um arquivo CSV/Excel.
+
 ## O problema que resolve
 
 Bases operacionais frequentemente contêm espaços invisíveis, campos vazios, cabeçalhos inconsistentes e registros duplicados. O Data Cleaning Studio identifica esses problemas, permite escolher as correções e compara o resultado antes do download.
