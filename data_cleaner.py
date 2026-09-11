@@ -36,6 +36,31 @@ def profile_data(df: pd.DataFrame) -> dict[str, int]:
     }
 
 
+def inspect_data(df: pd.DataFrame) -> dict[str, int]:
+    """Count visible problems so the interface can explain what will change."""
+    object_columns = list(df.select_dtypes(include=["object", "string"]).columns)
+    whitespace_cells = 0
+    blank_strings = 0
+    for col in object_columns:
+        series = df[col].astype("string")
+        whitespace_cells += int((series.notna() & series.ne(series.str.strip())).sum())
+        blank_strings += int(series.str.strip().eq("").sum())
+    normalized = make_unique_columns(df.columns)
+    return {
+        "headers": sum(str(old) != new for old, new in zip(df.columns, normalized)),
+        "whitespace": whitespace_cells,
+        "blank_strings": blank_strings,
+        "duplicates_after_trim": int(_trimmed_copy(df).duplicated().sum()),
+    }
+
+
+def _trimmed_copy(df: pd.DataFrame) -> pd.DataFrame:
+    candidate = df.copy()
+    for col in candidate.select_dtypes(include=["object", "string"]).columns:
+        candidate[col] = candidate[col].astype("string").str.strip()
+    return candidate
+
+
 def clean_dataframe(
     df: pd.DataFrame,
     *,
@@ -58,4 +83,3 @@ def clean_dataframe(
     if remove_duplicates:
         cleaned = cleaned.drop_duplicates()
     return cleaned.reset_index(drop=True)
-
