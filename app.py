@@ -16,6 +16,8 @@ from data_cleaner import (
 
 st.set_page_config(page_title="Data Quality Studio", page_icon="✨", layout="wide")
 
+# Deployment marker: advanced quality workflow is complete and synchronized.
+
 st.markdown("""
 <style>
   .stApp{background:#f7f8fa}.block-container{padding-top:3.4rem;padding-bottom:3rem}
