@@ -6,6 +6,7 @@ import streamlit as st
 
 from data_cleaner import clean_dataframe, inspect_data, profile_data
 
+# Keep the app deployment synchronized with the reusable cleaning module.
 
 st.set_page_config(page_title="Data Cleaning Studio", page_icon="✨", layout="wide")
 
