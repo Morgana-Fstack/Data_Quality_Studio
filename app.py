@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from io import BytesIO
-from pathlib import Path
-
 import pandas as pd
 import streamlit as st
 
-from data_cleaner import clean_dataframe, profile_data
+from data_cleaner import clean_dataframe, inspect_data, profile_data
 
 
 st.set_page_config(page_title="Data Cleaning Studio", page_icon="✨", layout="wide")
@@ -23,6 +21,10 @@ st.markdown("""
   div[data-testid="stMetric"] { background:white; border:1px solid #e5e7eb; padding:1rem;
     border-radius:16px; box-shadow:0 4px 16px rgba(17,24,39,.05); }
   .step { color:#991b1b; font-weight:700; letter-spacing:.04em; font-size:.78rem; }
+  .problem { background:#fff7ed; border:1px solid #fed7aa; border-left:5px solid #f97316;
+    padding:.8rem 1rem; border-radius:12px; margin:.35rem 0; }
+  .fixed { background:#f0fdf4; border:1px solid #bbf7d0; border-left:5px solid #22c55e;
+    padding:.8rem 1rem; border-radius:12px; margin:.35rem 0; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -55,7 +57,13 @@ if uploaded:
     except Exception as exc:
         st.error(f"Não consegui ler o arquivo: {exc}")
 elif use_sample:
-    df, source_name = pd.read_csv(Path(__file__).with_name("data.csv"), sep=";"), "data.csv (demonstração)"
+    df = pd.DataFrame({
+        " Nome do Cliente ": ["  Acme Tech  ", "Beta Store", "Gamma Foods", "Beta Store", "Delta Lab", "  "],
+        "E-mail ": ["CONTATO@ACME.COM ", "", "gamma@email.com", "", " contato@delta.com", ""],
+        " Status": ["Ativo ", "Em risco", "Ativo", "Em risco", "Ativo", ""],
+        "Valor Mensal": [1200, 850, 1500, 850, 990, None],
+    })
+    source_name = "carteira_clientes_suja.csv (demonstração)"
 
 if df is None:
     st.info("Comece enviando um arquivo ou abra a demonstração. Nenhuma limpeza acontece sem sua confirmação.")
@@ -68,10 +76,25 @@ if df is None:
 
 st.success(f"Arquivo carregado: **{source_name}**")
 before = profile_data(df)
+issues = inspect_data(df)
 st.markdown('<div class="step">01 · DIAGNÓSTICO DA BASE</div>', unsafe_allow_html=True)
 cols = st.columns(4)
 for col, label, value in zip(cols, ["Registros", "Colunas", "Campos vazios", "Duplicados"], before.values()):
     col.metric(label, f"{value:,}".replace(",", "."))
+
+st.subheader("Problemas encontrados")
+problem_labels = [
+    ("headers", "nomes de colunas fora do padrão"),
+    ("whitespace", "células com espaços extras"),
+    ("blank_strings", "textos vazios escondidos"),
+    ("duplicates_after_trim", "linhas duplicadas após a padronização"),
+]
+found = [(issues[key], label) for key, label in problem_labels if issues[key]]
+if found:
+    for count, label in found:
+        st.markdown(f'<div class="problem">⚠️ <strong>{count}</strong> {label}</div>', unsafe_allow_html=True)
+else:
+    st.success("Nenhum dos problemas automáticos foi encontrado nesta base.")
 
 with st.expander("Ver qualidade por coluna", expanded=True):
     quality = pd.DataFrame({
@@ -92,18 +115,35 @@ dedupe = c2.checkbox("Remover linhas exatamente duplicadas", True)
 cleaned = clean_dataframe(df, normalize_headers=normalize, trim_text=trim, empty_to_null=empty, remove_duplicates=dedupe)
 after = profile_data(cleaned)
 
-st.markdown('<div class="step">03 · COMPARE O RESULTADO</div>', unsafe_allow_html=True)
-left, right = st.columns(2)
-with left:
-    st.subheader("Antes")
-    st.dataframe(df.head(20), use_container_width=True, hide_index=True)
-with right:
-    st.subheader("Depois")
-    st.dataframe(cleaned.head(20), use_container_width=True, hide_index=True)
+st.markdown('<div class="step">03 · ENTENDA O QUE MUDOU</div>', unsafe_allow_html=True)
+applied = []
+if normalize and issues["headers"]:
+    applied.append(f'{issues["headers"]} nomes de colunas foram padronizados')
+if trim and issues["whitespace"]:
+    applied.append(f'{issues["whitespace"]} células perderam espaços extras')
+if empty and issues["blank_strings"]:
+    applied.append(f'{issues["blank_strings"]} textos vazios viraram campos nulos reais')
+removed = before["rows"] - after["rows"]
+if dedupe and removed:
+    applied.append(f'{removed} linhas duplicadas foram removidas')
+
+if applied:
+    for item in applied:
+        st.markdown(f'<div class="fixed">✓ {item}</div>', unsafe_allow_html=True)
+else:
+    st.info("As opções selecionadas não produziram alterações nesta base.")
+
+original_tab, clean_tab = st.tabs(["🔴 Base original (suja)", "🟢 Resultado limpo"])
+with original_tab:
+    st.caption("Este é o arquivo exatamente como foi recebido.")
+    st.dataframe(df.head(50), use_container_width=True, hide_index=True)
+with clean_tab:
+    st.caption("Este é o arquivo após aplicar somente as opções marcadas acima.")
+    st.dataframe(cleaned.head(50), use_container_width=True, hide_index=True)
 
 st.markdown('<div class="step">04 · BAIXE A BASE LIMPA</div>', unsafe_allow_html=True)
 summary = st.columns(3)
-summary[0].metric("Linhas removidas", before["rows"] - after["rows"])
+summary[0].metric("Correções realizadas", len(applied))
 summary[1].metric("Duplicados restantes", after["duplicates"])
 summary[2].metric("Campos vazios restantes", after["missing"])
 
@@ -113,7 +153,7 @@ with pd.ExcelWriter(xlsx, engine="openpyxl") as writer:
     cleaned.to_excel(writer, index=False, sheet_name="Dados limpos")
 
 d1, d2 = st.columns(2)
-d1.download_button("Baixar CSV limpo", csv_data, "base_limpa.csv", "text/csv", use_container_width=True, type="primary")
-d2.download_button("Baixar Excel limpo", xlsx.getvalue(), "base_limpa.xlsx", use_container_width=True)
+d1.download_button("Baixar resultado em CSV", csv_data, "base_limpa.csv", "text/csv", use_container_width=True, type="primary")
+d2.download_button("Baixar resultado em Excel", xlsx.getvalue(), "base_limpa.xlsx", use_container_width=True)
 
 st.caption("Projeto de portfólio desenvolvido por Morgana Petterle da Cunha.")
