@@ -1,100 +1,65 @@
-# DGT2823 — Data Cleaning with Python
+# Data Cleaning Studio
 
-> **Autoria e direitos:** projeto criado por **Morgana Petterle da Cunha**.  
-> Copyright © 2026. Todos os direitos reservados. O código está disponível
-> somente para portfólio, demonstração e avaliação profissional. Consulte a
-> [licença proprietária](LICENSE).
+> **Transforme planilhas desorganizadas em bases prontas para análise — direto pelo navegador.**
 
+Projeto visual de qualidade de dados desenvolvido por **Morgana Petterle da Cunha** com Python, pandas e Streamlit.
 
-[English](#english) | [Português](#português)
+## O problema que resolve
 
-## English
+Bases operacionais frequentemente contêm espaços invisíveis, campos vazios, cabeçalhos inconsistentes e registros duplicados. O Data Cleaning Studio identifica esses problemas, permite escolher as correções e compara o resultado antes do download.
 
-Practical project for **DGT2823 — Technologies for Big Data Solution Development**. It contains data manipulation and cleaning exercises built with Python and pandas.
+## Experiência da aplicação
 
-### Project contents
+1. Envie um arquivo CSV ou Excel — ou use a base demonstrativa.
+2. Consulte o diagnóstico de registros, colunas, vazios e duplicados.
+3. Escolha as regras de limpeza.
+4. Compare a tabela original com a tabela tratada.
+5. Baixe o resultado em CSV ou Excel.
 
-- `data.csv` — dataset provided for the assignment;
-- `microatividades.py` — activities covering data reading, subsets, display options, `head`, `tail` and `info`;
-- `pratica_pandas.py` — practical data cleaning and conversion of the `Date` column.
+## Funcionalidades
 
-### Result
+- upload de `.csv`, `.xlsx` e `.xls`;
+- detecção automática do separador de arquivos CSV;
+- diagnóstico geral e por coluna;
+- padronização de nomes de colunas;
+- remoção de espaços extras;
+- conversão de textos vazios em valores nulos;
+- remoção controlada de linhas duplicadas;
+- comparação visual antes × depois;
+- exportação em CSV e Excel;
+- processamento temporário, sem banco de dados.
 
-The cleaning pipeline fills missing calorie values with zero, normalizes inconsistent dates and removes records without a valid date. The included dataset produces 31 valid rows from 32 source records.
-
-| Validation | Result |
-| --- | --- |
-| Missing calories after cleaning | 0 |
-| Invalid dates after cleaning | 0 |
-| Automated tests | 3 passing |
-
-### Technologies
+## Tecnologias
 
 - Python
 - pandas
-- CSV data
+- Streamlit
+- openpyxl
+- unittest
 
-### How to run
+## Executar localmente
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate       # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python microatividades.py
-python pratica_pandas.py
+streamlit run app.py
 ```
 
-### Validation
+## Testes
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
----
+O projeto possui testes para a limpeza visual e para o exercício acadêmico que deu origem ao repositório.
 
-## Português
+## Origem do projeto
 
-Projeto prático da disciplina **DGT2823 — Tecnologias para Desenvolvimento de Soluções de Big Data**. Reúne exercícios de manipulação e limpeza de dados desenvolvidos com Python e pandas.
+O repositório nasceu como uma atividade da disciplina **DGT2823 — Tecnologias para Desenvolvimento de Soluções de Big Data**. Os arquivos `microatividades.py` e `pratica_pandas.py` foram preservados como histórico da evolução: de scripts executados no terminal para uma ferramenta visual e reutilizável.
 
-### Conteúdo do projeto
+## Autoria e licença
 
-- `data.csv` — conjunto de dados fornecido para a atividade;
-- `microatividades.py` — atividades de leitura, subconjuntos, opções de exibição, `head`, `tail` e `info`;
-- `pratica_pandas.py` — prática de limpeza de dados e conversão da coluna `Date`.
+Copyright © 2026 **Morgana Petterle da Cunha**. Uso disponível somente para portfólio, demonstração e avaliação profissional. Consulte a [licença](LICENSE).
 
-### Resultado
-
-O processo preenche calorias ausentes com zero, normaliza datas inconsistentes e remove registros sem data válida. O conjunto incluído produz 31 linhas válidas a partir de 32 registros originais.
-
-| Validação | Resultado |
-| --- | --- |
-| Calorias ausentes após a limpeza | 0 |
-| Datas inválidas após a limpeza | 0 |
-| Testes automatizados | 3 aprovados |
-
-### Tecnologias
-
-- Python
-- pandas
-- Dados em CSV
-
-### Como executar
-
-```bash
-python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python microatividades.py
-python pratica_pandas.py
-```
-
-### Validação
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-## Author / Autora
-
-**Morgana Petterle da Cunha**  
 [LinkedIn](https://linkedin.com/in/morgana-petterle) · [GitHub](https://github.com/Morgana-Fstack)
