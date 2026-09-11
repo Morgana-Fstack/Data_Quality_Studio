@@ -1,8 +1,8 @@
-# Data Cleaning Studio
+# Data Quality Studio
 
-> **Transforme planilhas desorganizadas em bases prontas para análise — direto pelo navegador.**
+> **Diagnostique, trate e valide planilhas antes de usá-las em análises ou sistemas.**
 
-Projeto visual de qualidade de dados desenvolvido por **Morgana Petterle da Cunha** com Python, pandas e Streamlit.
+Projeto visual de qualidade de dados desenvolvido por **Morgana Petterle da Cunha** com Python, pandas e Streamlit. A aplicação não é apenas um conversor de arquivos: ela mede a confiabilidade da base, explica os problemas, aplica regras controladas e documenta o resultado.
 
 ## O problema que resolve
 
@@ -10,23 +10,29 @@ Bases operacionais frequentemente contêm espaços invisíveis, campos vazios, c
 
 ## Experiência da aplicação
 
-1. Envie um arquivo CSV ou Excel — ou use a base demonstrativa.
-2. Consulte o diagnóstico de registros, colunas, vazios e duplicados.
-3. Escolha as regras de limpeza.
-4. Compare a tabela original com a tabela tratada.
-5. Baixe o resultado em CSV ou Excel.
+1. Envie um arquivo CSV ou Excel — ou use a carteira demonstrativa.
+2. Consulte a nota de qualidade e os problemas por coluna.
+3. Escolha as regras de tratamento.
+4. Compare a nota e os dados antes × depois.
+5. Baixe somente os dados ou um Excel com relatório e histórico.
 
 ## Funcionalidades
 
 - upload de `.csv`, `.xlsx` e `.xls`;
 - detecção automática do separador de arquivos CSV;
 - diagnóstico geral e por coluna;
+- nota de qualidade antes e depois;
+- validação de formato de e-mails;
+- detecção de linhas e colunas completamente vazias;
 - padronização de nomes de colunas;
 - remoção de espaços extras;
+- padronização de e-mails e nomes próprios;
 - conversão de textos vazios em valores nulos;
 - remoção controlada de linhas duplicadas;
+- substituição personalizada de valores;
 - comparação visual antes × depois;
-- exportação em CSV e Excel;
+- exportação em CSV;
+- Excel com dados limpos, qualidade por coluna e histórico do tratamento;
 - processamento temporário, sem banco de dados.
 
 ## Tecnologias
